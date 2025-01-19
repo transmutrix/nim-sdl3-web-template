@@ -14,6 +14,7 @@ import sdl3
 var
   window: SDL_Window
   renderer: SDL_Renderer
+  texture: SDL_Texture
   quit: bool
 
 discard SDL_SetAppMetadata("Untitled", "1.0", "com.you.your-game")
@@ -22,9 +23,21 @@ if not SDL_Init(SDL_INIT_VIDEO):
   echo "Couldn't initialize SDL: ", SDL_GetError()
   quit(QuitFailure)
 
-if not SDL_CreateWindowAndRenderer("examples/renderer/clear", 640, 480, 0, window, renderer):
+if not SDL_CreateWindowAndRenderer("urgamehere", 640, 480, 0, window, renderer):
   echo "Couldn't create window/renderer: ", SDL_GetError()
   quit(QuitFailure)
+
+block:
+  var surface = SDL_LoadBMP("assets/sample.bmp")
+  if surface == nil:
+    echo "Couldn't load bmp: ", SDL_GetError()
+    quit(QuitFailure)
+  texture = SDL_CreateTextureFromSurface(renderer, surface)
+  if texture == nil:
+    echo "Couldn't create texture: ", SDL_GetError()
+    quit(QuitFailure)
+  SDL_DestroySurface(surface)
+
 
 # Main loop.
 proc mainloop*() {.cdecl.} =
@@ -36,7 +49,6 @@ proc mainloop*() {.cdecl.} =
       if event.key.key == SDLK_SPACE:
         echo "stick a breakpoint here"
 
-
   let
     now = SDL_GetTicks().float / 1000
     red: float = 0.5 + 0.5*SDL_sin(now)
@@ -44,6 +56,15 @@ proc mainloop*() {.cdecl.} =
     blue: float = 0.5 + 0.5*SDL_sin(now + SDL_PI_D * 4/3)
   SDL_SetRenderDrawColorFloat(renderer, red, green, blue, 1)
   SDL_RenderClear(renderer)
+
+  var w,h: cfloat
+  discard SDL_GetTextureSize(texture, w, h)
+  let
+    rw = 440.0
+    rh = 440*(h/w)
+    r = SDL_FRect(x: (640-rw)/2, y: (480-rh)/2, w: rw, h: rh)
+  SDL_RenderTexture(renderer, texture, nil, r.addr )
+
   SDL_RenderPresent(renderer)
 
 # Startup

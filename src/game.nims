@@ -49,7 +49,10 @@ if defined(emscripten):
   --define:release # Do release optimizations on our code.
 
   switch("passL", "-o build/web/game.html")
-  switch("passL", "--shell-file ./emcc/shell_minimal.html")
-  switch("passL", "-s ALLOW_MEMORY_GROWTH=1 -s MAXIMUM_MEMORY=1gb")
+  switch("passL", "--shell-file ./emcc/shell.html")
+  switch("passL", "-s ALLOW_MEMORY_GROWTH=1 -s MAXIMUM_MEMORY=1gb -s INITIAL_MEMORY=64mb")
   switch("passL", "-s WASM")
   switch("passL", "-L./emcc/ -lSDL3")
+
+  # Embed asset files.
+  switch("passL", "--preload-file assets")
