@@ -1,0 +1,63 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Test (Debug)",
+      "type": "shell",
+      "dependsOn": ["Build (Debug)"],
+      "command": "${workspaceFolder}/build/debug/game",
+      "problemMatcher": "$nim",
+      "group":{
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Build (Debug)",
+      "type": "shell",
+      "command": "nim c --outdir:${workspaceFolder}/build/debug --debuginfo --linedir:on ${workspaceFolder}/src/game",
+      "problemMatcher": "$nim",
+      "group": {
+        "kind": "build"
+      }
+    },
+    {
+      "label": "Test (Release)",
+      "type": "shell",
+      "dependsOn": [ "Build (Release)" ],
+      "command": "nim r --outdir:${workspaceFolder}/build/release -d:release ${workspaceFolder}/src/game",
+      "problemMatcher": "$nim",
+      "group": {
+        "kind": "test"
+      }
+    },
+    {
+      "label": "Build (Release)",
+      "type": "shell",
+      "command": "nim c --outdir:${workspaceFolder}/build/debug --debuginfo --linedir:on ${workspaceFolder}/src/game",
+      "problemMatcher": "$nim",
+      "group": {
+        "kind": "build"
+      }
+    },
+    {
+      "label": "Test (Web)",
+      "type": "shell",
+      "dependsOn": [ "Build (Web)" ],
+      "command": "emrun ${workspaceFolder}/build/web/game.html",
+      "group": "test"
+    },
+    {
+      "label": "Build (Web)",
+      "type": "shell",
+      "command": "nim c -d:emscripten ${workspaceFolder}/src/game",
+      "problemMatcher": "$nim",
+      "group":{
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
