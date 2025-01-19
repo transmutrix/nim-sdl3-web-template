@@ -45,9 +45,6 @@ proc mainloop*() {.cdecl.} =
   while SDL_PollEvent(event):
     if event.type == SDL_EVENT_QUIT:
       quit = true
-    if event.type == SDL_EVENT_KEY_DOWN:
-      if event.key.key == SDLK_SPACE:
-        echo "stick a breakpoint here"
 
   let
     now = SDL_GetTicks().float / 1000
